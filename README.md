@@ -16,3 +16,4 @@ My log for #100daysofMLCode
 - I went on a side trip to discover what sized images GANs perform well on and came across this little wondrous summary: [Fantastic GANs and Where to Find Them](http://guimperarnau.com/blog/2017/03/Fantastic-GANs-and-where-to-find-them). Describes each of the GANs and when you should think about using them. Looks like I should be using an Improved DCGAN or an Improved Wasserstein GAN. 
 - Going with image scaling of 128x128 pixels as I've seen examples where Improved DCGAN worked fine on this size
 - I started running through the DCGAN in Keras code to understand it in more detail
+- Created my GPU instance on Google Cloud running the tensorflow docker container. Docker is bugging out. Will fix tomorrow 
