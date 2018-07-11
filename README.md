@@ -17,3 +17,9 @@ My log for #100daysofMLCode
 - Going with image scaling of 128x128 pixels as I've seen examples where Improved DCGAN worked fine on this size
 - I started running through the DCGAN in Keras code to understand it in more detail
 - Created my GPU instance on Google Cloud running the tensorflow docker container. Docker is bugging out. Will fix tomorrow 
+
+
+## Day 2: 11th July 2018
+
+- Managed to get my GCloud GPU instance to run the tensorflow docker container, but for some reason can't attach to the docker when I've ssh'd into the box. It just hangs. Been fighting it. Anyone else experienced this?
+- Started working through some example Wasserstein GAN code but pretty tired so thats been hard. Tomorrow I'll start with this 
