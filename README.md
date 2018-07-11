@@ -23,3 +23,5 @@ My log for #100daysofMLCode
 
 - Managed to get my GCloud GPU instance to run the tensorflow docker container, but for some reason can't attach to the docker when I've ssh'd into the box. It just hangs. Been fighting it. Anyone else experienced this?
 - Started working through some example Wasserstein GAN code but pretty tired so thats been hard. Tomorrow I'll start with this 
+- Found the command. GCloud linux isn't running bash. Weird. Used another command and it worked
+- Now cuda is fighting me. Why are you like this?
