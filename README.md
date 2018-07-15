@@ -25,3 +25,17 @@ My log for #100daysofMLCode
 - Started working through some example Wasserstein GAN code but pretty tired so thats been hard. Tomorrow I'll start with this 
 - Found the command. GCloud linux isn't running bash. Weird. Used another command and it worked
 - Now cuda is fighting me. Why are you like this?
+
+## Day 3: 14th July 2018
+
+- 12th and 13th got busy so did a couple of hours
+- Have abandoned google cloud. Tried out AWS - also needed to request a limit increase for GPU machine. Azure is super expensive
+- Paperspace provides gpu powered jupyter notebooks and that works.
+- I have bugs in my GAN code. Fighting through them. I predict I'll need a nice deep dive into GAN architectures tomorrow
+
+## Day 4: 15th July 2018
+
+- Got AWS to give me a GPU box. YAAASS. Would prefer that to only having jupyter notebook access
+- Realised I jumped in without understanding the Generator architecture (Upsampling, Convolution Transformation layers, etc) so I went back to the basics. Drew many pictures of layers with their dimensions.
+- Ended up on a refresher for CNNs. Wanted to make sure I understood the discriminator properly and wasn't feeling great about the core things so read the [Standford CS231 Notes](http://cs231n.github.io/convolutional-networks/)
+- Finally ended up trying to understand Batch Normalization by reading some of the original paper [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/pdf/1502.03167.pdf)
