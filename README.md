@@ -39,3 +39,9 @@ My log for #100daysofMLCode
 - Realised I jumped in without understanding the Generator architecture (Upsampling, Convolution Transformation layers, etc) so I went back to the basics. Drew many pictures of layers with their dimensions.
 - Ended up on a refresher for CNNs. Wanted to make sure I understood the discriminator properly and wasn't feeling great about the core things so read the [Standford CS231 Notes](http://cs231n.github.io/convolutional-networks/)
 - Finally ended up trying to understand Batch Normalization by reading some of the original paper [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/pdf/1502.03167.pdf)
+
+
+## Day 5: 16th July 2018
+- While trying to build a GAN architecture, I realised I had no idea how they got to the numbers of layers, kernels etc, that were being used by the architectures. I _THANKFULLY_ stumbled onto [A guide to convolution arithmetic for deep learning](https://arxiv.org/abs/1603.07285v1) which is a detailed, clear and generally magnificent explanation of how one calculates the sizes of layers, and parameters for the convolutions and the transposed convolutions needed in GANs. I recommend it to everyone.
+- I used my learnings to practice calculating the dimensions of layers the architectures for some existing Convnets and GANS. 
+- Tomorrow, I will actually code the architecture for my GAN
