@@ -45,3 +45,21 @@ My log for #100daysofMLCode
 - While trying to build a GAN architecture, I realised I had no idea how they got to the numbers of layers, kernels etc, that were being used by the architectures. I _THANKFULLY_ stumbled onto [A guide to convolution arithmetic for deep learning](https://arxiv.org/abs/1603.07285v1) which is a detailed, clear and generally magnificent explanation of how one calculates the sizes of layers, and parameters for the convolutions and the transposed convolutions needed in GANs. I recommend it to everyone.
 - I used my learnings to practice calculating the dimensions of layers the architectures for some existing Convnets and GANS. 
 - Tomorrow, I will actually code the architecture for my GAN
+
+## Day 6: 17th July 2018
+- Managed to make a GAN architecture in Keras that compiles. Yayz! And I used the new Conv2DTranspose layer. Woot!
+- Then the problem was that my images had bad EXIF data or other corrupt nonsense, so now to clean that. Thankfully found [this](https://www.kaggle.com/c/intel-mobileodt-cervical-cancer-screening/discussion/31558)
+- Then PIL was failing to find certain images. That turned out to be corrupt jpeg files. Wrote a lil bash script to detect invalid images so I can delete them. Thank you ImageMagick for the verify command
+```
+#!/bin/bash
+for filename in *.jpg; do  
+  error=`identify -regard-warnings $filename 2>&1 >/dev/null;`
+  if [ $? -ne 0 ]; then
+    echo "The image is corrupt or unknown format"
+    echo "$error"
+    echo $filename >> $1
+  fi
+done
+```
+And delete with `xargs -d '\n' rm < $1`
+- Tomorrow, I train my GAN on a subset of the data and clean the rest of the data
