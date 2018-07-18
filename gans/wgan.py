@@ -41,7 +41,7 @@ class WGAN():
         # The generator takes noise as input and generated imgs
         z = Input(shape=(100,))
         img = self.generator(z)
-        print(img.shape)
+        
         # For the combined model we will only train the generator
         self.discriminator.trainable = False
 
