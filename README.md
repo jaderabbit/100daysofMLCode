@@ -63,3 +63,8 @@ done
 ```
 And delete with `xargs -d '\n' rm < $1`
 - Tomorrow, I train my GAN on a subset of the data and clean the rest of the data
+
+## Day 7: 18th July 2018
+- Using my AWS GPU box. I just feel more comfortable running things in a VM. Need to practice using things like Colab or Datalab.
+- Currently downloading the larger dataset onto it. 10GB of albums of bands beginning with the word 'The' (Yes, where many of the best bands are). It's going to take 5 hours. I tried torrenting it. Discovered rtorrent (a terminal torrent client), but it gave me a hard time, so back to `wget` it is.
+- Did get the GAN training on a much smaller subset of data (All bands beginning with letter `x`). It's taking about 5 seconds per epoch with a batch size of 32. Now to babysit! Let's see if it does anything!
