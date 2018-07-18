@@ -171,25 +171,16 @@ class WGAN():
             # Plot the progress
             print ("%d [D loss: %f] [G loss: %f]" % (epoch, 1 - d_loss[0], 1 - g_loss[0]))
 
+    def save_model(self):
+        discriminator_model_json = self.discriminator.to_json()
+        with open("discriminator.json", "w") as json_file:
+            json_file.write(discriminator_model_json)
+        self.discriminator.save_weights("discriminator.h5")
+        print("Saved discriminator to disk")
 
-if __name__ == '__main__':
-    train_datagen = ImageDataGenerator(
-        rescale=1./255,
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True)
-
-    train_generator = train_datagen.flow_from_directory(
-        'dataset/audio-covers',  # this is the target directory
-        target_size=(150, 150),  # all images will be resized to 150x150
-        batch_size=batch_size,
-        class_mode='binary')  # since we use binary_crossentropy loss, we need binary labels
-
-    wgan = WGAN(128, 128, 3)
-    wgan.train(epochs=4000, train_generator=train_generator, batch_size=32, save_interval=50)
-
-
-
-
-
+        generator_model_json = self.generator.to_json()
+        with open("generator.json", "w") as json_file:
+            json_file.write(generator_model_json)
+        self.generator.save_weights("generator.h5")
+        print("Saved generator to disk")
 

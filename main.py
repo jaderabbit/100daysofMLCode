@@ -25,3 +25,4 @@ train_generator = train_datagen.flow_from_directory(
 
 w = wgan.WGAN(64, 64, 3)
 w.train(epochs=4000, train_generator=train_generator, batch_size=32, save_interval=100)
+w.save_model()
