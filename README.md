@@ -68,3 +68,20 @@ And delete with `xargs -d '\n' rm < $1`
 - Using my AWS GPU box. I just feel more comfortable running things in a VM. Need to practice using things like Colab or Datalab.
 - Currently downloading the larger dataset onto it. 10GB of albums of bands beginning with the word 'The' (Yes, where many of the best bands are). It's going to take 5 hours. I tried torrenting it. Discovered rtorrent (a terminal torrent client), but it gave me a hard time, so back to `wget` it is.
 - Did get the GAN training on a much smaller subset of data (All bands beginning with letter `x`). It's taking about 5 seconds per epoch with a batch size of 32. Now to babysit! Let's see if it does anything!
+
+## Day 8: 19th July 2018
+- My GAN sorta trained. It was getting somewhere but not far enough. My losses were very large. I'm still working out if that is a good thing. Need to read more into the Weisserstein loss metric. Started on that. It looks like a variation of cosine distance, but more to read!
+- Prepped the larger dataset of images (approx. 77000 images) and retrained. Here are some of the images I got:
+  ![alt text](http://raw.githubusercontent.com/jaderabbit/100daysofMLCode/master/images/gan.png "GAN1")
+  ![alt text](http://raw.githubusercontent.com/jaderabbit/100daysofMLCode/master/images/gan2.png "GAN2")
+
+- I see that the losses start converging to a much smaller range. I'm going to try train it for more epochs and see how that does.
+- Started planning my GAN presentation for next week: [Rabbiteers](https://www.meetup.com/Rabbiteer/events/252624998/)
+- Started reading the original GAN paper by Ian Goodfellow
+- Some gsoals for tomorrow and Saturday: 
+  - Understand out exactly how training works and why it is the way it is
+  - Understand exactly how the weisserstein works and why it is better and what are good values for performance
+  - Analyse the performance of my GAN trained for longer. See if we're getting any artifacts
+  - Modify the code to track more metrics properly
+  
+
