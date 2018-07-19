@@ -72,8 +72,8 @@ And delete with `xargs -d '\n' rm < $1`
 ## Day 8: 19th July 2018
 - My GAN sorta trained. It was getting somewhere but not far enough. My losses were very large. I'm still working out if that is a good thing. Need to read more into the Weisserstein loss metric. Started on that. It looks like a variation of cosine distance, but more to read!
 - Prepped the larger dataset of images (approx. 77000 images) and retrained. Here are some of the images I got:
-  ![alt text](http://raw.githubusercontent.com/jaderabbit/100daysofMLCode/master/images/gan.png "GAN1")
-  ![alt text](http://raw.githubusercontent.com/jaderabbit/100daysofMLCode/master/images/gan2.png "GAN2")
+  ![alt text](https://raw.githubusercontent.com/jaderabbit/100daysofMLCode/master/images/gan.png "GAN1")
+  ![alt text](https://raw.githubusercontent.com/jaderabbit/100daysofMLCode/master/images/gan2.png "GAN2")
 
 - I see that the losses start converging to a much smaller range. I'm going to try train it for more epochs and see how that does.
 - Started planning my GAN presentation for next week: [Rabbiteers](https://www.meetup.com/Rabbiteer/events/252624998/)
