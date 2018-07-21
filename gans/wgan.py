@@ -36,7 +36,7 @@ class WGAN():
 
         # Build and compile the generator
         self.generator = self.build_generator()
-        self.generator.compile(loss=self.wasserstein_loss, optimizer=optimizer)
+        self.generator.compile(loss=self.wasserstein_loss, optimizer='adam')
 
         # The generator takes noise as input and generated imgs
         z = Input(shape=(100,))
@@ -125,7 +125,7 @@ class WGAN():
 
         return Model(img, valid)
 
-    def train(self, epochs, train_generator, batch_size=128, save_interval=50):
+    def train(self, epochs, data_generator, batch_size=128, save_interval=50):
 
         # Rescale -1 to 1
         
@@ -140,7 +140,7 @@ class WGAN():
                 #  Train Discriminator
                 # ---------------------
 
-                imgs, things = train_generator.next()
+                imgs, things = next(data_generator())
                 imgs = imgs[0:half_batch]
                 noise = np.random.normal(0, 1, (half_batch, 100))
 
