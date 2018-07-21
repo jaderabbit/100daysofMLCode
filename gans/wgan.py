@@ -126,9 +126,12 @@ class WGAN():
         return Model(img, valid)
 
     def train(self, epochs, train_generator, batch_size=128, save_interval=50):
-
+        print("And so it begins...")
         # Rescale -1 to 1
         
+        from PIL import ImageFile
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 
         half_batch = int(batch_size / 2)
 
@@ -146,7 +149,6 @@ class WGAN():
 
                 # Generate a half batch of new images
                 gen_imgs = self.generator.predict(noise)
-                print(gen_imgs.shape)
                 # Train the discriminator
                 d_loss_real = self.discriminator.train_on_batch(imgs, -np.ones((half_batch, 1)))
                 d_loss_fake = self.discriminator.train_on_batch(gen_imgs, np.ones((half_batch, 1)))
