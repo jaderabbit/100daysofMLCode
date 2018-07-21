@@ -40,7 +40,7 @@ class WGAN():
         self.generator = self.build_generator()
 
         # The generator takes noise as input and generated imgs
-        z = Input(shape=(100,))
+        z = Input(shape=(self.latent_dim,))
         img = self.generator(z)
 
         # For the combined model we will only train the generator
@@ -136,6 +136,7 @@ class WGAN():
         valid = -np.ones((batch_size, 1))
         fake = np.ones((batch_size, 1))
 
+        self.sample_images(-1)
         for epoch in range(epochs):
 
             for _ in range(self.n_critic):
@@ -191,7 +192,7 @@ class WGAN():
         cnt = 0
         for i in range(r):
             for j in range(c):
-                axs[i,j].imshow(gen_imgs[cnt, :,:,0])
+                axs[i,j].imshow(gen_imgs[cnt, :,:,:])
                 axs[i,j].axis('off')
                 cnt += 1
         fig.savefig("results/albumart_%d.png" % epoch)

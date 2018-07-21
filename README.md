@@ -92,3 +92,5 @@ And delete with `xargs -d '\n' rm < $1`
 - I noticed that there were some gif images so removed them. 
 - I also wanted to save "progress" generated images so I'm doing that now to see how training goes
 - Updated some things in my architecture. I had some mistakes. 
+- Some early iterations of my training. It's already looking better to me:
+
