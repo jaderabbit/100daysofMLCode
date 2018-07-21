@@ -78,10 +78,16 @@ And delete with `xargs -d '\n' rm < $1`
 - I see that the losses start converging to a much smaller range. I'm going to try train it for more epochs and see how that does.
 - Started planning my GAN presentation for next week: [Rabbiteers](https://www.meetup.com/Rabbiteer/events/252624998/)
 - Started reading the original GAN paper by Ian Goodfellow
-- Some gsoals for tomorrow and Saturday: 
+- Some goals for tomorrow and Saturday: 
   - Understand out exactly how training works and why it is the way it is
   - Understand exactly how the weisserstein works and why it is better and what are good values for performance
   - Analyse the performance of my GAN trained for longer. See if we're getting any artifacts
   - Modify the code to track more metrics properly
-  
 
+## Day 9: 21st July 2018
+- So I trained for 10 times longer (40 000 epochs), but not significant improvement so I'm debugging
+- Noticed my images were in a (0,1) input range. I've wrapped the keras generator to scale between (0,1)
+- I noticed the image dataset has LOADS of duplicates. Using [fdupes](https://github.com/adrianlopezroche/fdupes) to remove the duplicates.   
+- I noticed that there were gifs so removed them. 
+- I also wanted to save "progress" generated images so I'm doing that now to see how training goes
+- Updated some things in my architecture

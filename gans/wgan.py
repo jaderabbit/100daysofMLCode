@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 
 from keras.datasets import mnist
-from keras.layers import Input, Dense, Reshape, Flatten, Dropout
+from keras.layers import Input, Dense, Reshape, Flatten, Dropout, Activation
 from keras.layers import BatchNormalization, Activation, ZeroPadding2D
 from keras.layers.advanced_activations import LeakyReLU
 from keras.layers.convolutional import UpSampling2D, Conv2D, Conv2DTranspose
@@ -55,6 +55,8 @@ class WGAN():
             optimizer=optimizer,
             metrics=['accuracy'])
 
+        
+
     def wasserstein_loss(self, y_true, y_pred):
         return K.mean(y_true * y_pred)
 
@@ -66,22 +68,24 @@ class WGAN():
 
         d = 128
         
-        model.add(Dense(4 * 4 * d * 8, activation="relu", input_shape=noise_shape))
+        model.add(Dense(4 * 4 * d * 8, activation="linear", input_shape=noise_shape))
         model.add(Reshape((4, 4, d*8)))
+
+        model.add(Conv2DTranspose(d*4, 4, strides=(2,2), padding='same'))
         model.add(BatchNormalization(momentum=0.8))
+        model.add(Activation('relu'))
         
-        model.add(Conv2DTranspose(d*4, 4, strides=(2,2), padding='same', activation='relu'))
+        model.add(Conv2DTranspose(d*2, 4, strides=(2,2), padding='same'))
         model.add(BatchNormalization(momentum=0.8))
-
-        model.add(Conv2DTranspose(d*2, 4, strides=(2,2), padding='same', activation='relu'))
-        model.add(BatchNormalization(momentum=0.8))
-
+        model.add(Activation('relu'))
        
-        model.add(Conv2DTranspose(d, 4, strides=(2,2), padding='same', activation='tanh'))
+        model.add(Conv2DTranspose(d, 4, strides=(2,2), padding='same'))
         model.add(BatchNormalization(momentum=0.8))
+        model.add(Activation('relu'))
 
-        model.add(Conv2DTranspose(d, 4, strides=(2,2), padding='same', activation='tanh'))
+        model.add(Conv2DTranspose(d, 4, strides=(2,2), padding='same'))
         model.add(BatchNormalization(momentum=0.8))
+        model.add(Activation('relu'))
 
         model.add(Conv2DTranspose(3, kernel_size=4, padding="same"))
         model.add(Activation("tanh"))
@@ -170,6 +174,29 @@ class WGAN():
 
             # Plot the progress
             print ("%d [D loss: %f] [G loss: %f]" % (epoch, 1 - d_loss[0], 1 - g_loss[0]))
+
+            # If at save interval => save generated image samples
+            if epoch % save_interval == 0:
+                self.save_imgs(epoch)
+
+    def save_imgs(self, epoch):
+        r, c = 5, 5
+        noise = np.random.normal(0, 1, (r * c, 100))
+        gen_imgs = self.generator.predict(noise)
+
+        # Rescale images 0 - 1
+        gen_imgs = 0.5 * gen_imgs + 0.5
+
+        fig, axs = plt.subplots(r, c)
+        #fig.suptitle("DCGAN: Generated digits", fontsize=12)
+        cnt = 0
+        for i in range(r):
+            for j in range(c):
+                axs[i,j].imshow(gen_imgs[cnt, :,:,0])
+                axs[i,j].axis('off')
+                cnt += 1
+        fig.savefig("results/albumart_%d.png" % epoch)
+        plt.close()
 
     def save_model(self):
         discriminator_model_json = self.discriminator.to_json()

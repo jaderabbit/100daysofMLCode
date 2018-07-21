@@ -32,5 +32,5 @@ def create_scaling_data_gen(generator):
 
 scaling_generator = create_scaling_data_gen(train_generator)
 w = wgan.WGAN(64, 64, 3)
-w.train(epochs=4000, data_generator=scaling_generator, batch_size=32, save_interval=100)
+w.train(epochs=4000, data_generator=scaling_generator, batch_size=32, save_interval=5)
 w.save_model()
