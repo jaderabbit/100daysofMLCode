@@ -4,7 +4,7 @@ from keras.datasets import mnist
 from keras.layers import Input, Dense, Reshape, Flatten, Dropout
 from keras.layers import BatchNormalization, Activation, ZeroPadding2D
 from keras.layers.advanced_activations import LeakyReLU
-from keras.layers.convolutional import UpSampling2D, Conv2D
+from keras.layers.convolutional import UpSampling2D, Conv2D, Conv2DTranspose
 from keras.models import Sequential, Model
 from keras.optimizers import RMSprop
 
@@ -23,6 +23,7 @@ class WGAN():
         self.channels = 3
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
         self.latent_dim = 100
+        self.depth = 128
 
         # Following parameter and optimizer set as recommended in paper
         self.n_critic = 5
@@ -61,16 +62,27 @@ class WGAN():
 
         model = Sequential()
 
-        model.add(Dense(128 * 7 * 7, activation="relu", input_dim=self.latent_dim))
-        model.add(Reshape((7, 7, 128)))
-        model.add(UpSampling2D())
-        model.add(Conv2D(128, kernel_size=4, padding="same"))
+        d = self.depth
+        
+        model.add(Dense(4 * 4 * d * 8, activation="relu", input_shape=(self.latent_dim,)))
+        model.add(Reshape((4, 4, d*8)))
+
+        model.add(Conv2DTranspose(d*4, kernel_size=4, strides=(2,2), padding='same'))
         model.add(BatchNormalization(momentum=0.8))
-        model.add(Activation("relu"))
-        model.add(UpSampling2D())
-        model.add(Conv2D(64, kernel_size=4, padding="same"))
+        model.add(Activation('relu'))
+
+        model.add(Conv2DTranspose(d*2, kernel_size=4, strides=(2,2), padding='same'))
         model.add(BatchNormalization(momentum=0.8))
-        model.add(Activation("relu"))
+        model.add(Activation('relu'))
+       
+        model.add(Conv2DTranspose(d, kernel_size=4, strides=(2,2), padding='same'))
+        model.add(BatchNormalization(momentum=0.8))
+        model.add(Activation('relu'))
+
+        model.add(Conv2DTranspose(d, kernel_size=4, strides=(2,2), padding='same'))
+        model.add(BatchNormalization(momentum=0.8))
+        model.add(Activation('relu'))
+
         model.add(Conv2D(self.channels, kernel_size=4, padding="same"))
         model.add(Activation("tanh"))
 
@@ -85,19 +97,20 @@ class WGAN():
 
         model = Sequential()
 
-        model.add(Conv2D(16, kernel_size=3, strides=2, input_shape=self.img_shape, padding="same"))
+        d = self.depth
+        model.add(Conv2D(d, kernel_size=4, strides=2, input_shape=self.img_shape, padding="same"))
         model.add(LeakyReLU(alpha=0.2))
         model.add(Dropout(0.25))
-        model.add(Conv2D(32, kernel_size=3, strides=2, padding="same"))
+        model.add(Conv2D(d*2, kernel_size=4, strides=2, padding="same"))
         model.add(ZeroPadding2D(padding=((0,1),(0,1))))
         model.add(BatchNormalization(momentum=0.8))
         model.add(LeakyReLU(alpha=0.2))
         model.add(Dropout(0.25))
-        model.add(Conv2D(64, kernel_size=3, strides=2, padding="same"))
+        model.add(Conv2D(d*4, kernel_size=4, strides=2, padding="same"))
         model.add(BatchNormalization(momentum=0.8))
         model.add(LeakyReLU(alpha=0.2))
         model.add(Dropout(0.25))
-        model.add(Conv2D(128, kernel_size=3, strides=1, padding="same"))
+        model.add(Conv2D(d*8, kernel_size=4, strides=1, padding="same"))
         model.add(BatchNormalization(momentum=0.8))
         model.add(LeakyReLU(alpha=0.2))
         model.add(Dropout(0.25))
@@ -111,14 +124,13 @@ class WGAN():
 
         return Model(img, validity)
 
-    def train(self, epochs, batch_size=128, sample_interval=50):
+    def train(self, epochs, data_generator, batch_size=128, sample_interval=50):
 
         # Load the dataset
-        (X_train, _), (_, _) = mnist.load_data()
+        from PIL import ImageFile
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-        # Rescale -1 to 1
-        X_train = (X_train.astype(np.float32) - 127.5) / 127.5
-        X_train = np.expand_dims(X_train, axis=3)
+        print("And so it begins...")
 
         # Adversarial ground truths
         valid = -np.ones((batch_size, 1))
@@ -133,8 +145,7 @@ class WGAN():
                 # ---------------------
 
                 # Select a random batch of images
-                idx = np.random.randint(0, X_train.shape[0], batch_size)
-                imgs = X_train[idx]
+                imgs, _ = next(data_generator())
                 
                 # Sample noise as generator input
                 noise = np.random.normal(0, 1, (batch_size, self.latent_dim))
@@ -179,13 +190,22 @@ class WGAN():
         cnt = 0
         for i in range(r):
             for j in range(c):
-                axs[i,j].imshow(gen_imgs[cnt, :,:,0], cmap='gray')
+                axs[i,j].imshow(gen_imgs[cnt, :,:,0])
                 axs[i,j].axis('off')
                 cnt += 1
-        fig.savefig("images/mnist_%d.png" % epoch)
+        fig.savefig("results/albumart_%d.png" % epoch)
         plt.close()
 
+    def save_model(self):
+        discriminator_model_json = self.critic.to_json()
+        with open("discriminator.json", "w") as json_file:
+            json_file.write(discriminator_model_json)
+        self.critic.save_weights("discriminator.h5")
+        print("Saved discriminator to disk")
 
-if __name__ == '__main__':
-    wgan = WGAN()
-    wgan.train(epochs=4000, batch_size=32, sample_interval=50)
+        generator_model_json = self.generator.to_json()
+        with open("generator.json", "w") as json_file:
+            json_file.write(generator_model_json)
+        self.generator.save_weights("generator.h5")
+        print("Saved generator to disk")
+
