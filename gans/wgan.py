@@ -143,9 +143,10 @@ class WGAN():
                 # ---------------------
                 #  Train Discriminator
                 # ---------------------
-
                 # Select a random batch of images
                 imgs, _ = next(data_generator())
+                if imgs.shape[0] != batch_size:
+                    imgs, _ = next(data_generator())
                 
                 # Sample noise as generator input
                 noise = np.random.normal(0, 1, (batch_size, self.latent_dim))
@@ -184,7 +185,7 @@ class WGAN():
         gen_imgs = self.generator.predict(noise)
 
         # Rescale images 0 - 1
-        gen_imgs = 0.5 * gen_imgs + 1
+        gen_imgs = (gen_imgs + 1)*0.5
 
         fig, axs = plt.subplots(r, c)
         cnt = 0

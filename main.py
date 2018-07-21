@@ -6,7 +6,7 @@ import numpy as np
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from gans import wgan
 
-batch_size = 32
+batch_size = 64
 
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(rescale=1./255)
@@ -35,5 +35,5 @@ def create_scaling_data_gen(generator):
 
 scaling_generator = create_scaling_data_gen(train_generator)
 w = wgan.WGAN()
-w.train(epochs=4000, data_generator=scaling_generator, batch_size=32, sample_interval=50)
+w.train(epochs=4000, data_generator=scaling_generator, batch_size=batch_size, sample_interval=50)
 w.save_model()
