@@ -72,6 +72,7 @@ And delete with `xargs -d '\n' rm < $1`
 ## Day 8: 19th July 2018
 - My GAN sorta trained. It was getting somewhere but not far enough. My losses were very large. I'm still working out if that is a good thing. Need to read more into the Weisserstein loss metric. Started on that. It looks like a variation of cosine distance, but more to read!
 - Prepped the larger dataset of images (approx. 77000 images) and retrained. Here are some of the images I got:
+
   ![alt text](https://raw.githubusercontent.com/jaderabbit/100daysofMLCode/master/images/gan.png "GAN1")
   ![alt text](https://raw.githubusercontent.com/jaderabbit/100daysofMLCode/master/images/gan2.png "GAN2")
 
@@ -88,6 +89,6 @@ And delete with `xargs -d '\n' rm < $1`
 - So I trained for 10 times longer (40 000 epochs), but not significant improvement so I'm debugging
 - Noticed my images were in a (0,1) input range. I've wrapped the keras generator to scale between (0,1)
 - I noticed the image dataset has LOADS of duplicates. Using [fdupes](https://github.com/adrianlopezroche/fdupes) to remove the duplicates.   
-- I noticed that there were gifs so removed them. 
+- I noticed that there were some gif images so removed them. 
 - I also wanted to save "progress" generated images so I'm doing that now to see how training goes
-- Updated some things in my architecture
+- Updated some things in my architecture. I had some mistakes. 
