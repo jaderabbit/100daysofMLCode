@@ -25,6 +25,15 @@ train_generator = train_datagen.flow_from_directory(
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
+def create_scaling_data_gen(generator):
+    def data_generator():
+        while True:
+            x_batch, y_batch = generator.next()
+            x_batch = np.subtract(x_batch, 1)
+            yield x_batch, y_batch
+    return data_generator
+
+scaling_generator = create_scaling_data_gen(train_generator)
 w = wgan.WGAN(64, 64, 3)
-w.train(epochs=10000, train_generator=train_generator, batch_size=32, save_interval=100)
+w.train(epochs=4000, data_generator=scaling_generator, batch_size=32, save_interval=100)
 w.save_model()
