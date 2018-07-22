@@ -6,7 +6,8 @@ from keras.layers import BatchNormalization, Activation, ZeroPadding2D
 from keras.layers.advanced_activations import LeakyReLU
 from keras.layers.convolutional import UpSampling2D, Conv2D, Conv2DTranspose
 from keras.models import Sequential, Model
-from keras.optimizers import RMSprop
+from keras.optimizers import RMSprop, Adam
+from keras.initializers import RandomNormal
 
 import keras.backend as K
 
@@ -28,7 +29,7 @@ class WGAN():
         # Following parameter and optimizer set as recommended in paper
         self.n_critic = 5
         self.clip_value = 0.01
-        optimizer = RMSprop(lr=0.00005)
+        optimizer = Adam(lr=0.0002)
 
         # Build and compile the critic
         self.critic = self.build_critic()
@@ -63,27 +64,26 @@ class WGAN():
         model = Sequential()
 
         d = self.depth
-        
-        model.add(Dense(4 * 4 * d * 8, activation="relu", input_shape=(self.latent_dim,)))
+        my_init = RandomNormal(mean=0.0, stddev=0.02, seed=None)
+        model.add(Dense(4 * 4 * d * 8, 
+                        activation="relu", 
+                        input_shape=(self.latent_dim,),
+                        kernel_initializer=my_init))
         model.add(Reshape((4, 4, d*8)))
 
-        model.add(Conv2DTranspose(d*4, kernel_size=4, strides=(2,2), padding='same'))
-        model.add(BatchNormalization(momentum=0.8))
+        model.add(Conv2DTranspose(d*4, kernel_size=4, strides=(2,2), padding='same', kernel_initializer=my_init))
+        model.add(BatchNormalization(momentum=0.5))
         model.add(Activation('relu'))
 
-        model.add(Conv2DTranspose(d*2, kernel_size=4, strides=(2,2), padding='same'))
-        model.add(BatchNormalization(momentum=0.8))
+        model.add(Conv2DTranspose(d*2, kernel_size=5, strides=(2,2), padding='same', kernel_initializer=my_init))
+        model.add(BatchNormalization(momentum=0.5))
         model.add(Activation('relu'))
        
-        model.add(Conv2DTranspose(d, kernel_size=4, strides=(2,2), padding='same'))
-        model.add(BatchNormalization(momentum=0.8))
+        model.add(Conv2DTranspose(d, kernel_size=5, strides=(2,2), padding='same', kernel_initializer=my_init))
+        model.add(BatchNormalization(momentum=0.5))
         model.add(Activation('relu'))
 
-        model.add(Conv2DTranspose(d, kernel_size=4, strides=(2,2), padding='same'))
-        model.add(BatchNormalization(momentum=0.8))
-        model.add(Activation('relu'))
-
-        model.add(Conv2D(self.channels, kernel_size=4, padding="same"))
+        model.add(Conv2DTranspose(self.channels, kernel_size=5, strides=(2,2), padding="same", kernel_initializer=my_init))
         model.add(Activation("tanh"))
 
         model.summary()
@@ -101,19 +101,22 @@ class WGAN():
         model.add(Conv2D(d, kernel_size=4, strides=2, input_shape=self.img_shape, padding="same"))
         model.add(LeakyReLU(alpha=0.2))
         model.add(Dropout(0.25))
+
         model.add(Conv2D(d*2, kernel_size=4, strides=2, padding="same"))
         model.add(ZeroPadding2D(padding=((0,1),(0,1))))
         model.add(BatchNormalization(momentum=0.8))
         model.add(LeakyReLU(alpha=0.2))
         model.add(Dropout(0.25))
+
         model.add(Conv2D(d*4, kernel_size=4, strides=2, padding="same"))
         model.add(BatchNormalization(momentum=0.8))
         model.add(LeakyReLU(alpha=0.2))
         model.add(Dropout(0.25))
+
         model.add(Conv2D(d*8, kernel_size=4, strides=1, padding="same"))
         model.add(BatchNormalization(momentum=0.8))
         model.add(LeakyReLU(alpha=0.2))
-        model.add(Dropout(0.25))
+ 
         model.add(Flatten())
         model.add(Dense(1))
 
