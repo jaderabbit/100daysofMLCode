@@ -92,5 +92,11 @@ And delete with `xargs -d '\n' rm < $1`
 - I noticed that there were some gif images so removed them. 
 - I also wanted to save "progress" generated images so I'm doing that now to see how training goes
 - Updated some things in my architecture. I had some mistakes. 
-- Some early iterations of my training. It's already looking better to me:
+- Turns out there are many architectures for GAN and despite claiming to be an implementation of the original DC-GAN/WGAN paper, they'll make subtle updates to the architecture (RMSProp versus Adam, linear outputs instead of sigmoid) and it's hard to know why when you're a beginner. 
+- Either way the thing isn't training...
+
+## Day 10: 22 July
+- Tried to fix my codes. Something is still wrong. Not training well. Looks like I get weird feature maps at the end. 
+- Found a tensorflow DC-GAN code that reads very similar to the original. I'm going to use this code to see if that works, then at least (a) I can go deeper into what it is I've done wrong and (b) I can demo something at my presentation this Thursday assimung my own code doesn't work
+- Made most of my presentation which is good.
 
