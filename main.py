@@ -4,7 +4,7 @@ from keras.models import Sequential
 from PIL import Image
 import numpy as np 
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
-from gans import wgan
+from gans import dcgan
 
 batch_size = 64
 
@@ -34,6 +34,6 @@ def create_scaling_data_gen(generator):
     return data_generator
 
 scaling_generator = create_scaling_data_gen(train_generator)
-w = wgan.WGAN()
-w.train(epochs=4000, data_generator=scaling_generator, batch_size=batch_size, sample_interval=50)
+w = dcgan.DCGAN()
+w.train(epochs=4000, data_generator=scaling_generator, batch_size=batch_size, save_interval=50)
 w.save_model()
