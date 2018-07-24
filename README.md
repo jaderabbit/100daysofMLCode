@@ -100,3 +100,15 @@ And delete with `xargs -d '\n' rm < $1`
 - Found a tensorflow DC-GAN code that reads very similar to the original. I'm going to use this code to see if that works, then at least (a) I can go deeper into what it is I've done wrong and (b) I can demo something at my presentation this Thursday assimung my own code doesn't work
 - Made most of my presentation which is good.
 
+## Day 11: 23rd July 2018
+- Have abandoned the WGAN. I can't get the DCGAN to work. Trained using [another DCGAN](https://github.com/carpedm20/DCGAN-tensorflow) on my data. It worked. Like perfectly. And trained in like 3 hours.
+- Looked at my code and the DCGAN and saw where it differed and made adjustments
+- My code is still training slow and I'm unsure if it's something I'm missing or if Keras implements something different to what I expect. 
+- That said, check this out. I made a little training montage of my training
+
+  ![alt text](http://raw.githubusercontent.com/jaderabbit/100daysofMLCode/master/images/training.gif "montage")
+
+## Day 12: 24th July 2018
+- Finishing off my slides for Thursday which you can see here: [http://bit.ly/deeperdreams](http://bit.ly/deeperdreams) 
+- Rough day, so that's all I've managed to do. Tomorrow I will prep my code demonstrations and explanations for Thursday
+
