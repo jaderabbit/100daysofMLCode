@@ -24,6 +24,7 @@ class DCGAN():
         self.channels = 3
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
         self.latent_dim = 100
+
         self.depth = 64
 
         optimizer = Adam(0.0002, 0.5)
@@ -62,9 +63,11 @@ class DCGAN():
                         activation="linear", 
                         input_shape=(self.latent_dim,),
                         kernel_initializer=my_init))
-        model.add(Reshape((4, 4, d*8))) # A tensor comes out of here. 
-        model.add(BatchNormalization(momentum=0.8))
-        model.add(Activation('relu'))
+        model.add(Reshape((4, 4, d*8))) # a vector goes in and a tensor comes.
+        model.add(BatchNormalization(momentum=0.8)) 
+        model.add(Activation('relu')) 
+        # ReLU used commonly in Deep Neural networks as does not suffer so much from vanishing/exploding gradients
+        # Better convergence
 
         model.add(Conv2DTranspose(d*4, kernel_size=4, strides=(2,2), padding='same', kernel_initializer=my_init))
         model.add(BatchNormalization(momentum=0.8))
@@ -79,7 +82,11 @@ class DCGAN():
         model.add(Activation('relu'))
 
         model.add(Conv2DTranspose(self.channels, kernel_size=5, strides=(2,2), padding="same", kernel_initializer=my_init))
-        model.add(Activation("tanh"))
+        model.add(Activation("tanh")) 
+        # According to the original paper:
+        ##  We observed that using a bounded activation allowed the model to learn more quickly to saturate
+        ##  and cover the color space of the training distribution."
+        # This is why we scale the data between -1 and 1 and not 0 and 1 as (-1,1) is the "active" range of tanh
 
         model.summary()
 
@@ -97,10 +104,26 @@ class DCGAN():
         my_init = RandomNormal(mean=0.0, stddev=0.02, seed=None)
         
         model.add(Conv2D(d, kernel_size=5, strides=2, input_shape=self.img_shape, padding="same", kernel_initializer=my_init))
-        model.add(LeakyReLU(alpha=0.2))
+        model.add(LeakyReLU(alpha=0.2)) 
+        # LeakyReLU allows you to set a non zero gradient when unit is not active.
+        # I'm not sure I understand why it's needed
+        # One source said: "We use a leaky ReLU to allow gradients to flow backwards through the layer unimpeded"
+        # Original DCGAN paper said: 
+        # => "Within the discriminator we found the leaky rectified activation (Maas et al., 2013) (Xu et al., 2015) to work well, 
+        # => especially for higher resolution modeling"
+
 
         model.add(Conv2D(d*2, kernel_size=5, strides=2, padding="same", kernel_initializer=my_init))
         model.add(BatchNormalization(momentum=0.9))
+        # Best explanation I can find: https://towardsdatascience.com/batch-normalization-in-neural-networks-1ac91516821c 
+        # The idea: We normalize the input to speed up training, why don't we normalize hidden layers too?
+        # => Batch normalization allows each layer of a network to learn by itself a little bit more independently of other layers.
+        # => We can use a higher learning rate since high and low values will get "normalized" out
+        # => It reduces overfitting because it has a slight regularization effects
+        # => Increases stability of the network
+        # => batch normalization normalizes the output of a previous activation layer by subtracting the batch mean 
+        #    and dividing by the batch standard deviation.
+
         model.add(LeakyReLU(alpha=0.2))
         model.add(Dropout(0.25))
 
@@ -113,25 +136,19 @@ class DCGAN():
         model.add(BatchNormalization(momentum=0.9))
         model.add(LeakyReLU(alpha=0.2))
  
-        model.add(Flatten())
+        model.add(Flatten()) # Takes 3D tensor and flattens it into a single dimensional vector
         model.add(Dense(1))
         model.add(Activation('sigmoid'))
 
-        model.summary()
+        model.summary() # Just outputs the architecture
 
         img = Input(shape=self.img_shape)
         validity = model(img)
 
         return Model(img, validity)
 
+    #TODO Fix epochs
     def train(self, epochs, data_generator, batch_size=128, save_interval=50):
-
-        # Load the dataset
-        (X_train, _), (_, _) = mnist.load_data()
-
-        # Rescale -1 to 1
-        X_train = X_train / 127.5 - 1.
-        X_train = np.expand_dims(X_train, axis=3)
 
         # Adversarial ground truths
         valid = np.ones((batch_size, 1))
@@ -143,7 +160,7 @@ class DCGAN():
             #  Train Discriminator
             # ---------------------
 
-            # Select a random half of images
+            # Select a random batch of images
             imgs, _ = next(data_generator())
 
             # Sample noise and generate a batch of new images
@@ -161,6 +178,11 @@ class DCGAN():
 
             # Train the generator (wants discriminator to mistake images as real)
             g_loss = self.combined.train_on_batch(noise, valid)
+
+            # Train it again (different from paper)
+            # Make sure discriminator doesn't reach 0
+            more_noise = np.random.normal(0, 1, (batch_size, self.latent_dim))
+            g_loss = self.combined.train_on_batch(more_noise, valid)
 
             # Plot the progress
             print ("%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[1], g_loss))
@@ -187,9 +209,3 @@ class DCGAN():
                 cnt += 1
         fig.savefig("results/albumart_%d.png" % epoch)
         plt.close()
-
-
-
-if __name__ == '__main__':
-    dcgan = DCGAN()
-    dcgan.train(epochs=4000, batch_size=32, save_interval=50)

@@ -37,3 +37,5 @@ scaling_generator = create_scaling_data_gen(train_generator)
 w = dcgan.DCGAN()
 w.train(epochs=4000, data_generator=scaling_generator, batch_size=batch_size, save_interval=50)
 w.save_model()
+
+# TODO: Jupyter notebook the final model
